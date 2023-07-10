@@ -4,19 +4,19 @@ public class Calculator {
     private static int x = 5;
 
     public static int sum(int a) {
-        return x + a;
+        return a + x;
     }
 
     public int multiply(int b) {
-        return x * b;
+        return b * x;
     }
 
     public static int minus(int c) {
-        return x - c;
+        return c - x;
     }
 
     public int divide(int d) {
-        return x / d;
+        return d / x;
     }
 
     public int sumAllOperation(int e) {
