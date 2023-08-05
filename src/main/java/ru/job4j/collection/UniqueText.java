@@ -11,10 +11,9 @@ public class UniqueText {
             check.add(word);
         }
         for (String word : text) {
-            if (check.contains(word)) {
-                continue;
+            if (!check.contains(word)) {
+                return false;
             }
-            return false;
         }
         return true;
     }
