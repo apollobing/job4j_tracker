@@ -59,7 +59,6 @@ public class Analyze {
                 .flatMap(pupil -> pupil.subjects().stream())
                 .collect(
                         groupingBy(Subject::name,
-                                LinkedHashMap::new,
                                 summingDouble(Subject::score)
                         )
                 )
