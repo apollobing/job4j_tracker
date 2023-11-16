@@ -165,8 +165,8 @@
                     <execution>
                         <phase>process-resources</phase>
                         <goals>
-                            <goal>clearCheckSums</goal>
                             <goal>update</goal>
+                            <goal>clearCheckSums</goal>
                         </goals>
                     </execution>
                 </executions>
