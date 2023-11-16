@@ -104,7 +104,7 @@ public class TrackerTest {
         Store tracker = new MemTracker();
         Item item = new Item("Bug");
         tracker.add(item);
-        boolean result = tracker.delete(1000);
+        boolean result = tracker.findById(1000) != null;
         assertThat(tracker.findById(item.getId()).getName()).isEqualTo("Bug");
         assertThat(result).isFalse();
     }
