@@ -106,4 +106,15 @@ public class SqlTrackerTest {
         assertThat(tracker.findById(item.getId())).isNotNull();
     }
 
+    @Test
+    public void whenDeleteOneItemAndFindByGeneratedIdAnotherItemThenMustBeTheSame() {
+        SqlTracker tracker = new SqlTracker(connection);
+        Item item = new Item("item");
+        Item item1 = new Item("item1");
+        tracker.add(item);
+        tracker.add(item1);
+        tracker.delete(item.getId());
+        assertThat(tracker.findById(item1.getId())).isEqualTo(item1);
+    }
+
 }
