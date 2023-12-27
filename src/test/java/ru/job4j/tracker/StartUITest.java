@@ -1,6 +1,12 @@
 package ru.job4j.tracker;
 
 import org.junit.jupiter.api.Test;
+import ru.job4j.tracker.action.*;
+import ru.job4j.tracker.input.Input;
+import ru.job4j.tracker.output.Output;
+import ru.job4j.tracker.output.Stub;
+import ru.job4j.tracker.store.Memory;
+import ru.job4j.tracker.store.Store;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,15 +16,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class StartUITest {
     @Test
     public void whenCreateItem() {
-        Input in = new StubInput(
+        Input in = new ru.job4j.tracker.input.Stub(
                 new String[] {"0", "Item name", "1"}
         );
-        Output out = new StubOutput();
-        Store tracker = new MemTracker();
+        Output out = new Stub();
+        Store tracker = new Memory();
         List<UserAction> actions = new ArrayList<>() {
             {
-                add(new CreateAction(out));
-                add(new ExitAction(out));
+                add(new Create(out));
+                add(new Exit(out));
             }
         };
         new StartUI(out).init(in, tracker, actions);
@@ -27,17 +33,17 @@ public class StartUITest {
 
     @Test
     public void whenReplaceItem() {
-        Store tracker = new MemTracker();
+        Store tracker = new Memory();
         Item item = tracker.add(new Item("Replaced item"));
         String replacedName = "New item name";
-        Input in = new StubInput(
+        Input in = new ru.job4j.tracker.input.Stub(
                 new String[] {"0", String.valueOf(item.getId()), replacedName, "1"}
         );
-        Output out = new StubOutput();
+        Output out = new Stub();
         List<UserAction> actions = new ArrayList<>() {
             {
-                add(new EditAction(out));
-                add(new ExitAction(out));
+                add(new Edit(out));
+                add(new Exit(out));
             }
         };
         new StartUI(out).init(in, tracker, actions);
@@ -46,16 +52,16 @@ public class StartUITest {
 
     @Test
     public void whenDeleteItem() {
-        Store tracker = new MemTracker();
+        Store tracker = new Memory();
         Item item = tracker.add(new Item("Deleted item"));
-        Input in = new StubInput(
+        Input in = new ru.job4j.tracker.input.Stub(
                 new String[] {"0", String.valueOf(item.getId()), "1"}
         );
-        Output out = new StubOutput();
+        Output out = new Stub();
         List<UserAction> actions = new ArrayList<>() {
             {
-                add(new DeleteAction(out));
-                add(new ExitAction(out));
+                add(new Delete(out));
+                add(new Exit(out));
             }
         };
         new StartUI(out).init(in, tracker, actions);
@@ -64,14 +70,14 @@ public class StartUITest {
 
     @Test
     public void whenExit() {
-        Output out = new StubOutput();
-        Input in = new StubInput(
+        Output out = new Stub();
+        Input in = new ru.job4j.tracker.input.Stub(
                 new String[] {"0"}
         );
-        Store tracker = new MemTracker();
+        Store tracker = new Memory();
         List<UserAction> actions = new ArrayList<>() {
             {
-                add(new ExitAction(out));
+                add(new Exit(out));
             }
         };
         new StartUI(out).init(in, tracker, actions);
@@ -84,17 +90,17 @@ public class StartUITest {
 
     @Test
     public void whenReplaceItemTestOutputIsSuccessful() {
-        Output out = new StubOutput();
-        Store tracker = new MemTracker();
+        Output out = new Stub();
+        Store tracker = new Memory();
         Item one = tracker.add(new Item("test1"));
         String replaceName = "New Test Name";
-        Input in = new StubInput(
+        Input in = new ru.job4j.tracker.input.Stub(
                 new String[] {"0", String.valueOf(one.getId()), replaceName, "1"}
         );
         List<UserAction> actions = new ArrayList<>() {
             {
-                add(new EditAction(out));
-                add(new ExitAction(out));
+                add(new Edit(out));
+                add(new Exit(out));
             }
         };
         new StartUI(out).init(in, tracker, actions);
@@ -114,18 +120,18 @@ public class StartUITest {
 
     @Test
     public void whenReplaceItemTestOutputIsNotSuccessful() {
-        Output out = new StubOutput();
-        Store tracker = new MemTracker();
+        Output out = new Stub();
+        Store tracker = new Memory();
         Item one = tracker.add(new Item("test1"));
         int nonExistingId = 57;
         String replaceName = "New Test Name";
-        Input in = new StubInput(
+        Input in = new ru.job4j.tracker.input.Stub(
                 new String[] {"0", String.valueOf(nonExistingId), replaceName, "1"}
         );
         List<UserAction> actions = new ArrayList<>() {
             {
-                add(new EditAction(out));
-                add(new ExitAction(out));
+                add(new Edit(out));
+                add(new Exit(out));
             }
         };
         new StartUI(out).init(in, tracker, actions);
@@ -145,18 +151,18 @@ public class StartUITest {
 
     @Test
     public void whenFindAllActionTestOutputIsSuccessful() {
-        Output out = new StubOutput();
-        Store tracker = new MemTracker();
+        Output out = new Stub();
+        Store tracker = new Memory();
         Item one = tracker.add(new Item("test1"));
         Item two = tracker.add(new Item("test2"));
         Item three = tracker.add(new Item("test3"));
-        Input in = new StubInput(
+        Input in = new ru.job4j.tracker.input.Stub(
                 new String[] {"0", "1"}
         );
         List<UserAction> actions = new ArrayList<>() {
             {
-                add(new ShowAction(out));
-                add(new ExitAction(out));
+                add(new Show(out));
+                add(new Exit(out));
             }
         };
         new StartUI(out).init(in, tracker, actions);
@@ -178,15 +184,15 @@ public class StartUITest {
 
     @Test
     public void whenFindAllActionTestOutputIsNotSuccessful() {
-        Output out = new StubOutput();
-        Store tracker = new MemTracker();
-        Input in = new StubInput(
+        Output out = new Stub();
+        Store tracker = new Memory();
+        Input in = new ru.job4j.tracker.input.Stub(
                 new String[] {"0", "1"}
         );
         List<UserAction> actions = new ArrayList<>() {
             {
-                add(new ShowAction(out));
-                add(new ExitAction(out));
+                add(new Show(out));
+                add(new Exit(out));
             }
         };
         new StartUI(out).init(in, tracker, actions);
@@ -206,19 +212,19 @@ public class StartUITest {
 
     @Test
     public void whenFindByNameActionTestOutputIsSuccessful() {
-        Output out = new StubOutput();
-        Store tracker = new MemTracker();
+        Output out = new Stub();
+        Store tracker = new Memory();
         Item one = tracker.add(new Item("test1"));
         Item two = tracker.add(new Item("test2"));
         Item three = tracker.add(new Item("test1"));
         String name = "test1";
-        Input in = new StubInput(
+        Input in = new ru.job4j.tracker.input.Stub(
                 new String[] {"0", name, "1"}
         );
         List<UserAction> actions = new ArrayList<>() {
             {
-                add(new FindNameAction(out));
-                add(new ExitAction(out));
+                add(new FindName(out));
+                add(new Exit(out));
             }
         };
         new StartUI(out).init(in, tracker, actions);
@@ -239,19 +245,19 @@ public class StartUITest {
 
     @Test
     public void whenFindByNameActionTestOutputIsNotSuccessful() {
-        Output out = new StubOutput();
-        Store tracker = new MemTracker();
+        Output out = new Stub();
+        Store tracker = new Memory();
         Item one = tracker.add(new Item("test"));
         Item two = tracker.add(new Item("test2"));
         Item three = tracker.add(new Item("test"));
         String name = "test1";
-        Input in = new StubInput(
+        Input in = new ru.job4j.tracker.input.Stub(
                 new String[] {"0", name, "1"}
         );
         List<UserAction> actions = new ArrayList<>() {
             {
-                add(new FindNameAction(out));
-                add(new ExitAction(out));
+                add(new FindName(out));
+                add(new Exit(out));
             }
         };
         new StartUI(out).init(in, tracker, actions);
@@ -271,17 +277,17 @@ public class StartUITest {
 
     @Test
     public void whenFindIdActionTestOutputIsSuccessful() {
-        Output out = new StubOutput();
-        Store tracker = new MemTracker();
+        Output out = new Stub();
+        Store tracker = new Memory();
         Item one = tracker.add(new Item("test1"));
         String id = String.valueOf(one.getId());
-        Input in = new StubInput(
+        Input in = new ru.job4j.tracker.input.Stub(
                 new String[] {"0", id, "1"}
         );
         List<UserAction> actions = new ArrayList<>() {
             {
-                add(new FindIdAction(out));
-                add(new ExitAction(out));
+                add(new FindId(out));
+                add(new Exit(out));
             }
         };
         new StartUI(out).init(in, tracker, actions);
@@ -301,17 +307,17 @@ public class StartUITest {
 
     @Test
     public void whenFindIdActionTestOutputIsNotSuccessful() {
-        Output out = new StubOutput();
-        Store tracker = new MemTracker();
+        Output out = new Stub();
+        Store tracker = new Memory();
         Item one = tracker.add(new Item("test1"));
         String id = "99";
-        Input in = new StubInput(
+        Input in = new ru.job4j.tracker.input.Stub(
                 new String[] {"0", id, "1"}
         );
         List<UserAction> actions = new ArrayList<>() {
             {
-                add(new FindIdAction(out));
-                add(new ExitAction(out));
+                add(new FindId(out));
+                add(new Exit(out));
             }
         };
         new StartUI(out).init(in, tracker, actions);
@@ -331,14 +337,14 @@ public class StartUITest {
 
     @Test
     public void whenInvalidExit() {
-        Output out = new StubOutput();
-        Input in = new StubInput(
+        Output out = new Stub();
+        Input in = new ru.job4j.tracker.input.Stub(
                 new String[] {"17", "0"}
         );
-        Store tracker = new MemTracker();
+        Store tracker = new Memory();
         List<UserAction> actions = new ArrayList<>() {
             {
-                add(new ExitAction(out));
+                add(new Exit(out));
             }
         };
         new StartUI(out).init(in, tracker, actions);

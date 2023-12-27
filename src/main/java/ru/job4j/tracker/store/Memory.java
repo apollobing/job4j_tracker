@@ -1,10 +1,12 @@
-package ru.job4j.tracker;
+package ru.job4j.tracker.store;
+
+import ru.job4j.tracker.Item;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MemTracker implements Store {
+public class Memory implements Store {
     private final List<Item> items = new ArrayList<>();
     private int ids = 1;
 

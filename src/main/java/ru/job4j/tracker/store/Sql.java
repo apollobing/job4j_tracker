@@ -1,4 +1,6 @@
-package ru.job4j.tracker;
+package ru.job4j.tracker.store;
+
+import ru.job4j.tracker.Item;
 
 import java.io.InputStream;
 import java.sql.*;
@@ -6,20 +8,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-public class SqlTracker implements Store {
+public class Sql implements Store {
 
     private Connection cn;
 
-    public SqlTracker() {
+    public Sql() {
         init();
     }
 
-    public SqlTracker(Connection cn) {
+    public Sql(Connection cn) {
         this.cn = cn;
     }
 
     private void init() {
-        try (InputStream in = SqlTracker.class.getClassLoader()
+        try (InputStream in = Sql.class.getClassLoader()
                 .getResourceAsStream("db/liquibase.properties")) {
             Properties config = new Properties();
             config.load(in);
@@ -100,7 +102,7 @@ public class SqlTracker implements Store {
         try (PreparedStatement ps = cn.prepareStatement("SELECT * FROM items")) {
             try (ResultSet resultSet = ps.executeQuery()) {
                 while (resultSet.next()) {
-                    items.add(SqlTracker.createItem(resultSet));
+                    items.add(Sql.createItem(resultSet));
                 }
             }
         } catch (Exception e) {
@@ -117,7 +119,7 @@ public class SqlTracker implements Store {
             ps.execute();
             try (ResultSet resultSet = ps.executeQuery()) {
                 while (resultSet.next()) {
-                    items.add(SqlTracker.createItem(resultSet));
+                    items.add(Sql.createItem(resultSet));
                 }
             }
         } catch (Exception e) {
@@ -135,7 +137,7 @@ public class SqlTracker implements Store {
             ps.execute();
             try (ResultSet resultSet = ps.executeQuery()) {
                 while (resultSet.next()) {
-                    item = SqlTracker.createItem(resultSet);
+                    item = Sql.createItem(resultSet);
                 }
             }
         } catch (Exception e) {

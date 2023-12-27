@@ -1,5 +1,13 @@
 package ru.job4j.tracker;
 
+import ru.job4j.tracker.action.*;
+import ru.job4j.tracker.input.Input;
+import ru.job4j.tracker.input.Validate;
+import ru.job4j.tracker.output.Console;
+import ru.job4j.tracker.output.Output;
+import ru.job4j.tracker.store.Memory;
+import ru.job4j.tracker.store.Store;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,13 +40,13 @@ public class StartUI {
     }
 
     public static void main(String[] args) {
-        Output output = new ConsoleOutput();
-        Input input = new ValidateInput(output, new ConsoleInput());
-        try (Store tracker = new MemTracker()) {
-            List<UserAction> actions = Arrays.asList(new CreateAction(output), new ShowAction(output),
-                    new EditAction(output), new DeleteAction(output), new FindIdAction(output),
-                    new FindNameAction(output), new CreateManyItems(output),
-                    new DeleteAllItems(output), new ExitAction(output));
+        Output output = new Console();
+        Input input = new Validate(output, new ru.job4j.tracker.input.Console());
+        try (Store tracker = new Memory()) {
+            List<UserAction> actions = Arrays.asList(new Create(output), new Show(output),
+                    new Edit(output), new Delete(output), new FindId(output),
+                    new FindName(output), new CreateManyItems(output),
+                    new DeleteAllItems(output), new Exit(output));
             new StartUI(output).init(input, tracker, actions);
         } catch (Exception e) {
             e.printStackTrace();

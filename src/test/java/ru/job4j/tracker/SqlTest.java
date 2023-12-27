@@ -4,6 +4,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import ru.job4j.tracker.store.Sql;
 
 import java.io.InputStream;
 import java.sql.Connection;
@@ -15,13 +16,13 @@ import java.util.Properties;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SqlTrackerTest {
+public class SqlTest {
 
     private static Connection connection;
 
     @BeforeAll
     public static void initConnection() {
-        try (InputStream in = SqlTracker.class.getClassLoader().getResourceAsStream("db/liquibase_test.properties")) {
+        try (InputStream in = Sql.class.getClassLoader().getResourceAsStream("db/liquibase_test.properties")) {
             Properties config = new Properties();
             config.load(in);
             Class.forName(config.getProperty("driver-class-name"));
@@ -49,7 +50,7 @@ public class SqlTrackerTest {
 
     @Test
     public void whenSaveItemAndFindByGeneratedIdThenMustBeTheSame() {
-        SqlTracker tracker = new SqlTracker(connection);
+        Sql tracker = new Sql(connection);
         Item item = new Item("item");
         tracker.add(item);
         assertThat(tracker.findById(item.getId())).isEqualTo(item);
@@ -57,7 +58,7 @@ public class SqlTrackerTest {
 
     @Test
     public void whenReplaceItemAndFindByGeneratedIdThenMustBeTheSame() {
-        SqlTracker tracker = new SqlTracker(connection);
+        Sql tracker = new Sql(connection);
         Item item = new Item("item");
         tracker.add(item);
         Item newItem = new Item(item.getId(), "new_item");
@@ -67,7 +68,7 @@ public class SqlTrackerTest {
 
     @Test
     public void whenDeleteItemAndFindByGeneratedIdThenMustBeNull() {
-        SqlTracker tracker = new SqlTracker(connection);
+        Sql tracker = new Sql(connection);
         Item item = new Item("item");
         tracker.add(item);
         tracker.delete(item.getId());
@@ -76,7 +77,7 @@ public class SqlTrackerTest {
 
     @Test
     public void whenFindAllItemsAndContainsAllIsTrue() {
-        SqlTracker tracker = new SqlTracker(connection);
+        Sql tracker = new Sql(connection);
         Item item = new Item("item");
         Item item1 = new Item("item1");
         Item item2 = new Item("item2");
@@ -88,7 +89,7 @@ public class SqlTrackerTest {
 
     @Test
     public void whenFindByNameItemsAndContainsAllIsTrue() {
-        SqlTracker tracker = new SqlTracker(connection);
+        Sql tracker = new Sql(connection);
         Item item = new Item("item");
         Item item1 = new Item("item1");
         Item item2 = new Item("item");
@@ -100,7 +101,7 @@ public class SqlTrackerTest {
 
     @Test
     public void whenFindByIdItemAndFindByGeneratedIdThenMustBeIsNotNull() {
-        SqlTracker tracker = new SqlTracker(connection);
+        Sql tracker = new Sql(connection);
         Item item = new Item("item");
         tracker.add(item);
         assertThat(tracker.findById(item.getId())).isNotNull();
@@ -108,7 +109,7 @@ public class SqlTrackerTest {
 
     @Test
     public void whenDeleteOneItemAndFindByGeneratedIdAnotherItemThenMustBeTheSame() {
-        SqlTracker tracker = new SqlTracker(connection);
+        Sql tracker = new Sql(connection);
         Item item = new Item("item");
         Item item1 = new Item("item1");
         tracker.add(item);
