@@ -1,7 +1,7 @@
 package ru.job4j.tracker;
 
 import org.junit.Test;
-import ru.job4j.tracker.store.Memory;
+import ru.job4j.tracker.store.MemTracker;
 import ru.job4j.tracker.store.Store;
 
 import java.util.List;
@@ -10,10 +10,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MemoryTest {
+public class MemTrackerTest {
     @Test
     public void whenAddNewItemThenTrackerHasSameItem() {
-        Store tracker = new Memory();
+        Store tracker = new MemTracker();
         Item item = new Item();
         item.setName("test1");
         tracker.add(item);
@@ -23,7 +23,7 @@ public class MemoryTest {
 
     @Test
     public void whenTestFindById() {
-        Store tracker = new Memory();
+        Store tracker = new MemTracker();
         Item bug = new Item("Bug");
         Item item = tracker.add(bug);
         Item result = tracker.findById(item.getId());
@@ -32,7 +32,7 @@ public class MemoryTest {
 
     @Test
     public void whenTestFindAll() {
-        Store tracker = new Memory();
+        Store tracker = new MemTracker();
         Item first = new Item("First");
         Item second = new Item("Second");
         tracker.add(first);
@@ -43,7 +43,7 @@ public class MemoryTest {
 
     @Test
     public void whenTestFindByNameCheckArrayLength() {
-        Store tracker = new Memory();
+        Store tracker = new MemTracker();
         Item first = new Item("First");
         Item second = new Item("Second");
         tracker.add(first);
@@ -57,7 +57,7 @@ public class MemoryTest {
 
     @Test
     public void whenTestFindByNameCheckSecondItemName() {
-        Store tracker = new Memory();
+        Store tracker = new MemTracker();
         Item first = new Item("First");
         Item second = new Item("Second");
         tracker.add(first);
@@ -71,7 +71,7 @@ public class MemoryTest {
 
     @Test
     public void whenReplaceItemIsSuccessful() {
-        Store tracker = new Memory();
+        Store tracker = new MemTracker();
         Item item = new Item("Bug");
         tracker.add(item);
         int id = item.getId();
@@ -82,7 +82,7 @@ public class MemoryTest {
 
     @Test
     public void whenReplaceItemIsNotSuccessful() {
-        Store tracker = new Memory();
+        Store tracker = new MemTracker();
         Item item = new Item("Bug");
         tracker.add(item);
         Item updateItem = new Item("Bug with description");
@@ -93,7 +93,7 @@ public class MemoryTest {
 
     @Test
     public void whenDeleteItemIsSuccessful() {
-        Store tracker = new Memory();
+        Store tracker = new MemTracker();
         Item item = new Item("Bug");
         tracker.add(item);
         int id = item.getId();
@@ -103,7 +103,7 @@ public class MemoryTest {
 
     @Test
     public void whenDeleteItemIsNotSuccessful() {
-        Store tracker = new Memory();
+        Store tracker = new MemTracker();
         Item item = new Item("Bug");
         tracker.add(item);
         boolean result = tracker.findById(1000) != null;

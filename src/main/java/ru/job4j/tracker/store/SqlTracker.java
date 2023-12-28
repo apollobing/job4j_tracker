@@ -8,20 +8,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-public class Sql implements Store {
+public class SqlTracker implements Store {
 
     private Connection cn;
 
-    public Sql() {
+    public SqlTracker() {
         init();
     }
 
-    public Sql(Connection cn) {
+    public SqlTracker(Connection cn) {
         this.cn = cn;
     }
 
     private void init() {
-        try (InputStream in = Sql.class.getClassLoader()
+        try (InputStream in = SqlTracker.class.getClassLoader()
                 .getResourceAsStream("db/liquibase.properties")) {
             Properties config = new Properties();
             config.load(in);
@@ -102,7 +102,7 @@ public class Sql implements Store {
         try (PreparedStatement ps = cn.prepareStatement("SELECT * FROM items")) {
             try (ResultSet resultSet = ps.executeQuery()) {
                 while (resultSet.next()) {
-                    items.add(Sql.createItem(resultSet));
+                    items.add(SqlTracker.createItem(resultSet));
                 }
             }
         } catch (Exception e) {
@@ -119,7 +119,7 @@ public class Sql implements Store {
             ps.execute();
             try (ResultSet resultSet = ps.executeQuery()) {
                 while (resultSet.next()) {
-                    items.add(Sql.createItem(resultSet));
+                    items.add(SqlTracker.createItem(resultSet));
                 }
             }
         } catch (Exception e) {
@@ -137,7 +137,7 @@ public class Sql implements Store {
             ps.execute();
             try (ResultSet resultSet = ps.executeQuery()) {
                 while (resultSet.next()) {
-                    item = Sql.createItem(resultSet);
+                    item = SqlTracker.createItem(resultSet);
                 }
             }
         } catch (Exception e) {
