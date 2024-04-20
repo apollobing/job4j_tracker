@@ -6,7 +6,6 @@ import lombok.*;
 @RequiredArgsConstructor
 public class Category {
     @EqualsAndHashCode.Include
-    @NonNull
     @Getter
     private int id;
 
