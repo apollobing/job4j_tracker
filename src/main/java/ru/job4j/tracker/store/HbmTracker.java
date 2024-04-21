@@ -8,6 +8,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.query.Query;
 import ru.job4j.tracker.Item;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HbmTracker implements Store, AutoCloseable {
@@ -21,28 +22,33 @@ public class HbmTracker implements Store, AutoCloseable {
         Session session = sf.openSession();
         try {
             session.beginTransaction();
-            session.save(item);
+            session.persist(item);
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
+        } finally {
+            session.close();
         }
-        session.close();
         return item;
     }
 
     @Override
     public boolean replace(int id, Item item) {
-        boolean result = findById(id) != null;
-        if (result) {
-            item.setId(id);
-            Session session = sf.openSession();
-            try {
-                session.beginTransaction();
-                session.update(item);
-                session.getTransaction().commit();
-            } catch (Exception e) {
-                session.getTransaction().rollback();
-            }
+        boolean result = false;
+        Session session = sf.openSession();
+        try {
+            session.beginTransaction();
+            result = session.createMutationQuery(
+                            "UPDATE Item SET name = :fName,"
+                                    + "created = :fCreated WHERE id = :fId")
+                    .setParameter("fName", item.getName())
+                    .setParameter("fCreated", item.getCreated())
+                    .setParameter("fId", id)
+                    .executeUpdate() > 0;
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+        } finally {
             session.close();
         }
         return result;
@@ -55,44 +61,63 @@ public class HbmTracker implements Store, AutoCloseable {
             session.beginTransaction();
             Item item = new Item();
             item.setId(id);
-            session.delete(item);
+            session.remove(item);
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
+        } finally {
+            session.close();
         }
-        session.close();
     }
 
     @Override
     public List<Item> findAll() {
         Session session = sf.openSession();
-        session.beginTransaction();
-        List<Item> result = session.createQuery("FROM Item", Item.class).list();
-        session.getTransaction().commit();
-        session.close();
-        return result;
+        List<Item> items = new ArrayList<>();
+        try {
+            session.beginTransaction();
+            items = session.createQuery("FROM Item", Item.class).list();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+        } finally {
+            session.close();
+        }
+        return items;
     }
 
     @Override
     public List<Item> findByName(String key) {
         Session session = sf.openSession();
-        session.beginTransaction();
-        Query<Item> query = session.createQuery("FROM Item WHERE name = :fName", Item.class);
-        query.setParameter("fName", key);
-        List<Item> result = query.list();
-        session.getTransaction().commit();
-        session.close();
-        return result;
+        List<Item> items = new ArrayList<>();
+        try {
+            session.beginTransaction();
+            Query<Item> query = session.createQuery("FROM Item WHERE name = :fName", Item.class);
+            query.setParameter("fName", key);
+            items = query.list();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+        } finally {
+            session.close();
+        }
+        return items;
     }
 
     @Override
     public Item findById(int id) {
         Session session = sf.openSession();
-        session.beginTransaction();
-        Item result = session.get(Item.class, id);
-        session.getTransaction().commit();
-        session.close();
-        return result;
+        Item item = null;
+        try {
+            session.beginTransaction();
+            item = session.get(Item.class, id);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+        } finally {
+            session.close();
+        }
+        return item;
     }
 
     @Override
